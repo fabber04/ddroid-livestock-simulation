@@ -8,10 +8,49 @@
         "env": []
     },
     {
-        "id": "15b62b27dac115a4",
+        "id": "a1b2c3d4e5f60000",
+        "type": "comment",
+        "z": "a4fc8659772e3bf8",
+        "name": "DDROID pump logic - OFF at start; LOW starts filling; FULL or STOP stops",
+        "info": "Simulated water-point fill controller.\n\nInputs (inject nodes):\n- Water LOW  (topic level / LOW)\n- Water FULL (topic level / FULL)\n- STOP       (topic command / STOP)\n- Initialise (topic init, runs once at startup)\n\nThe Pump controller function holds the pump state in flow context and\nfollows the rules above. Watch the 'Pump state' debug and the node status.",
+        "x": 290,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "a1b2c3d4e5f60001",
         "type": "inject",
         "z": "a4fc8659772e3bf8",
-        "name": "",
+        "name": "Initialise (OFF)",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "init",
+        "payload": "",
+        "payloadType": "str",
+        "x": 170,
+        "y": 120,
+        "wires": [
+            [
+                "a1b2c3d4e5f60010"
+            ]
+        ]
+    },
+    {
+        "id": "a1b2c3d4e5f60002",
+        "type": "inject",
+        "z": "a4fc8659772e3bf8",
+        "name": "Water LOW",
         "props": [
             {
                 "p": "payload"
@@ -25,13 +64,110 @@
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 260,
+        "topic": "level",
+        "payload": "LOW",
+        "payloadType": "str",
+        "x": 170,
         "y": 200,
         "wires": [
-            []
+            [
+                "a1b2c3d4e5f60010"
+            ]
         ]
+    },
+    {
+        "id": "a1b2c3d4e5f60003",
+        "type": "inject",
+        "z": "a4fc8659772e3bf8",
+        "name": "Water FULL",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "level",
+        "payload": "FULL",
+        "payloadType": "str",
+        "x": 170,
+        "y": 260,
+        "wires": [
+            [
+                "a1b2c3d4e5f60010"
+            ]
+        ]
+    },
+    {
+        "id": "a1b2c3d4e5f60004",
+        "type": "inject",
+        "z": "a4fc8659772e3bf8",
+        "name": "STOP",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "command",
+        "payload": "STOP",
+        "payloadType": "str",
+        "x": 170,
+        "y": 320,
+        "wires": [
+            [
+                "a1b2c3d4e5f60010"
+            ]
+        ]
+    },
+    {
+        "id": "a1b2c3d4e5f60010",
+        "type": "function",
+        "z": "a4fc8659772e3bf8",
+        "name": "Pump controller",
+        "func": "// DDROID simulated pump / fill logic\n// State machine stored in flow context \"pump\": \"OFF\" | \"ON\"\n// Rules:\n//   - Starts OFF (set in the On Start tab)\n//   - Water LOW    -> pump ON  (start filling)\n//   - Water FULL   -> pump OFF (stop filling)\n//   - STOP command -> pump OFF (stop filling)\n\nlet pump = flow.get(\"pump\");\nif (pump === undefined) { pump = \"OFF\"; }\n\nconst topic = (msg.topic || \"\").toString().toLowerCase();\nconst value = (msg.payload || \"\").toString().toUpperCase();\nlet event = \"no change\";\n\nif (topic === \"command\" && value === \"STOP\") {\n    pump = \"OFF\";\n    event = \"STOP pressed -> pump OFF\";\n} else if (topic === \"level\" && value === \"LOW\") {\n    pump = \"ON\";\n    event = \"Water LOW -> start filling\";\n} else if (topic === \"level\" && value === \"FULL\") {\n    pump = \"OFF\";\n    event = \"Water FULL -> stop filling\";\n} else if (topic === \"init\") {\n    pump = \"OFF\";\n    event = \"Initialised -> pump OFF\";\n}\n\nflow.set(\"pump\", pump);\n\nnode.status({\n    fill: pump === \"ON\" ? \"green\" : \"red\",\n    shape: \"dot\",\n    text: \"Pump \" + pump\n});\n\nmsg.payload = {\n    pump: pump,\n    filling: (pump === \"ON\"),\n    event: event\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "// Ensure the pump starts OFF whenever the flow is (re)deployed\nflow.set(\"pump\", \"OFF\");\n",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 220,
+        "wires": [
+            [
+                "a1b2c3d4e5f60020"
+            ]
+        ]
+    },
+    {
+        "id": "a1b2c3d4e5f60020",
+        "type": "debug",
+        "z": "a4fc8659772e3bf8",
+        "name": "Pump state",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 710,
+        "y": 220,
+        "wires": []
     }
 ]
