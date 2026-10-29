@@ -7,3 +7,9 @@ ros2_ws/log/
 simulation/frames/
 *.xwd
 .DS_Store
+
+# Node-RED
+node_modules/
+flows_cred.json
+.config.*.json
+.config.*.json.backup
