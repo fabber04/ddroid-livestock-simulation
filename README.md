@@ -146,3 +146,15 @@ Regenerate the world after a geometry change:
 cd simulation
 python3 build_world.py
 ```
+
+
+ROLE ALLOCATIONS BY SYSTEMS ENGINEER FOR PHASE 1:
+
+1. Project Manage: Follow up to ensure everyone is at work.
+2. Software Engineer: Create main project files for Node RED and allow for Programmer 1 and Programmer 2's collaboration.
+3. Programmers 1 and 2: Get Instructions from Software Engineer and ensure Node RED is simulating as planned.
+4. AI Engineer: Work with the Systems Engineer and Software Engineer on integrating the ESP32 and the physical autofil system.
+5. Network Engineer:TBA
+6. Chief Security Officer: TBA
+7. Database Admin: TBA
+8. Systems Engineer: Present phase 1 and role allocation for phase 1.
