@@ -13,3 +13,4 @@ node_modules/
 flows_cred.json
 .config.*.json
 .config.*.json.backup
+.flows.json.backup

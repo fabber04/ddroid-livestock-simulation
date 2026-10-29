@@ -1,0 +1,124 @@
+﻿{
+  "patches": {
+    "@/main": {
+      "nodes": {
+        "S141jTgafx": {
+          "id": "S141jTgafx",
+          "type": "xod/debug/tweak-pulse",
+          "position": {
+            "x": 2,
+            "y": 0,
+            "units": "slots"
+          },
+          "label": "LOW"
+        },
+        "SkjMjTxTMe": {
+          "id": "SkjMjTxTMe",
+          "type": "xod/debug/tweak-pulse",
+          "position": {
+            "x": 6,
+            "y": 0,
+            "units": "slots"
+          },
+          "label": "FULL"
+        },
+        "BJSIsTepGg": {
+          "id": "BJSIsTepGg",
+          "type": "xod/debug/tweak-pulse",
+          "position": {
+            "x": 10,
+            "y": 0,
+            "units": "slots"
+          },
+          "label": "STOP"
+        },
+        "HkxojTl6zg": {
+          "id": "HkxojTl6zg",
+          "type": "xod/core/flip-flop",
+          "position": {
+            "x": 2,
+            "y": 2,
+            "units": "slots"
+          }
+        },
+        "BkmCjTgTMx": {
+          "id": "BkmCjTgTMx",
+          "type": "xod/core/any",
+          "position": {
+            "x": 7,
+            "y": 1,
+            "units": "slots"
+          }
+        },
+        "r1pehaeTzg": {
+          "id": "r1pehaeTzg",
+          "type": "xod/debug/watch",
+          "position": {
+            "x": 2,
+            "y": 3,
+            "units": "slots"
+          }
+        }
+      },
+      "links": {
+        "B12X36g6fe": {
+          "id": "B12X36g6fe",
+          "output": {
+            "nodeId": "S141jTgafx",
+            "pinKey": "Bkf4BDsmV"
+          },
+          "input": {
+            "nodeId": "HkxojTl6zg",
+            "pinKey": "Bkh8A_Sv1-"
+          }
+        },
+        "r1BEhTxpze": {
+          "id": "r1BEhTxpze",
+          "output": {
+            "nodeId": "SkjMjTxTMe",
+            "pinKey": "Bkf4BDsmV"
+          },
+          "input": {
+            "nodeId": "BkmCjTgTMx",
+            "pinKey": "ryv7IRdSP1b"
+          }
+        },
+        "S15V3Tgafe": {
+          "id": "S15V3Tgafe",
+          "output": {
+            "nodeId": "BJSIsTepGg",
+            "pinKey": "Bkf4BDsmV"
+          },
+          "input": {
+            "nodeId": "BkmCjTgTMx",
+            "pinKey": "ByU7LRuSPkW"
+          }
+        },
+        "B1EHn6x6fl": {
+          "id": "B1EHn6x6fl",
+          "output": {
+            "nodeId": "BkmCjTgTMx",
+            "pinKey": "ByHmL0uHPk-"
+          },
+          "input": {
+            "nodeId": "HkxojTl6zg",
+            "pinKey": "B1RU0OrDkb"
+          }
+        },
+        "Hy5B3al6Ml": {
+          "id": "Hy5B3al6Ml",
+          "output": {
+            "nodeId": "HkxojTl6zg",
+            "pinKey": "HkyxURuSPyW"
+          },
+          "input": {
+            "nodeId": "r1pehaeTzg",
+            "pinKey": "HkXK-dGob"
+          }
+        }
+      },
+      "path": "@/main"
+    }
+  },
+  "name": "ddroid-pump"
+}
