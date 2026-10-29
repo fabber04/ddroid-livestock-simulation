@@ -158,3 +158,4 @@ ROLE ALLOCATIONS BY SYSTEMS ENGINEER FOR PHASE 1:
 6. Chief Security Officer: TBA
 7. Database Admin: TBA
 8. Systems Engineer: Present phase 1 and role allocation for phase 1.
+9. Tester: Initial Test; Manually test if physical system is working appropriately AND test the Node RED and Gazebo simulations as well.
