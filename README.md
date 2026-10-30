@@ -155,8 +155,8 @@ guide. See [`hardware/README.md`](hardware/README.md) for the full assembly.
 
 ### Assembled system
 
-The whole water point — supply tank, pump, pipe, trough, float-switch bracket
-and controller — as one model. Open
+The whole water point — bench, supply tank, pump, pipe, trough, switches,
+status lamps and livestock — as one model, mirroring the Gazebo scene. Open
 [`hardware/system-assembly/system_assembly.stl`](hardware/system-assembly/system_assembly.stl)
 on GitHub to rotate it in the browser.
 

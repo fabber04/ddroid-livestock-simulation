@@ -1,17 +1,17 @@
-"""Build a 3D model of the whole DDROID water point, assembled.
+"""Build a 3D model of the whole DDROID water point, mirroring the Gazebo scene.
 
-Supply tank -> pump (in its mount) -> pipe -> trough, with the float-switch
-bracket on the trough and the controller enclosure wired in. Uses the real
-tank/trough sizes and switch heights from simulation/ddroid_scene.py and
-drops in the printed parts (enclosure, bracket, pump mount).
+Ports the geometry from ../../simulation/build_world.py and ddroid_scene.py:
+wood bench on legs, supply stand, open-top supply tank and trough with water,
+the vertical pump, the supply->trough pipe, the float-switch markers, the
+status/pump lamps, and two livestock, on a green ground.
 
 Outputs (in this folder):
-  system_assembly.stl  - single mesh, rotatable in GitHub's 3D viewer
+  system_assembly.stl  - single mesh (mm), rotatable in GitHub's 3D viewer
   system_assembly.glb  - coloured, for any glTF viewer
-  preview.png          - shaded render
+  preview.png          - shaded render with a sky background
 
-Units are millimetres. Requires: trimesh, manifold3d, numpy, matplotlib.
-Run:  python generate_assembly.py
+Units here are metres (as in Gazebo); exports are scaled to mm.
+Requires: trimesh, numpy, matplotlib.  Run:  python generate_assembly.py
 """
 
 import os
@@ -19,28 +19,35 @@ import numpy as np
 import trimesh
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-HW = os.path.dirname(HERE)
 
-# Colours (0-255 RGBA)
-C_TANK = [158, 168, 180, 255]
-C_WATER = [30, 115, 210, 150]
-C_PUMP = [40, 42, 48, 255]
-C_PIPE = [70, 80, 92, 255]
-C_BENCH = [140, 102, 64, 255]
-C_ENC = [92, 202, 165, 255]
-C_BRACKET = [240, 153, 123, 255]
-C_MOUNT = [176, 169, 236, 255]
-C_SW = [120, 150, 190, 255]
-C_SW_CUT = [217, 75, 75, 255]
-C_WIRE = [50, 50, 55, 255]
+# Colours (0-255 RGBA), from build_world.py
+GROUND = [92, 117, 71, 255]
+WOOD = [115, 77, 41, 255]
+PLASTIC = [158, 168, 179, 255]
+PLASTIC_DARK = [71, 82, 92, 255]
+WATER = [31, 115, 209, 235]
+PUMP_BODY = [38, 41, 46, 255]
+COW = [107, 71, 41, 255]
+COW_DARK = [56, 36, 20, 255]
+LAMP_ON = [242, 140, 13, 255]
+MODE_REFILL = [26, 89, 230, 255]
+SW_WET = [26, 89, 217, 255]
+SW_DRY = [191, 191, 184, 255]
+SW_CUT = [217, 38, 31, 255]
+SKY = (0.62, 0.76, 0.88)
 
-WALL = 12.0
-items = []  # (mesh, rgba)
+# Scene constants (metres), from ddroid_scene.py
+SUPPLY = {"cx": -0.72, "cy": 0.0, "z0": 0.90, "sx": 0.30, "sy": 0.30, "h": 0.34}
+TROUGH = {"cx": 0.62, "cy": 0.02, "z0": 0.84, "sx": 0.66, "sy": 0.32, "h": 0.16}
+PUMP_XYZ = (-0.05, 0.0, 0.98)
+MODE_LAMP_XYZ = (0.0, -0.42, 0.82)
+WALL = 0.018
+
+items = []
 
 
 def add(mesh, rgba):
     items.append((mesh, rgba))
-    return mesh
 
 
 def box(size, center):
@@ -50,92 +57,96 @@ def box(size, center):
 
 
 def vcyl(r, h, center):
-    m = trimesh.creation.cylinder(radius=r, height=h, sections=40)
+    m = trimesh.creation.cylinder(radius=r, height=h, sections=36)
     m.apply_translation(center)
     return m
 
 
-def pipe(r, p0, p1):
-    return trimesh.creation.cylinder(radius=r, segment=[np.array(p0), np.array(p1)], sections=24)
-
-
-def tank(spec, rgba):
-    cx, cy, z0, sx, sy, h = (spec[k] for k in ("cx", "cy", "z0", "sx", "sy", "h"))
-    add(box((sx + 2 * WALL, sy + 2 * WALL, WALL), (cx, cy, z0 - WALL / 2)), rgba)
-    add(box((WALL, sy, h), (cx - sx / 2 - WALL / 2, cy, z0 + h / 2)), rgba)
-    add(box((WALL, sy, h), (cx + sx / 2 + WALL / 2, cy, z0 + h / 2)), rgba)
-    add(box((sx + 2 * WALL, WALL, h), (cx, cy + sy / 2 + WALL / 2, z0 + h / 2)), rgba)
-    fl = h * 0.45
-    add(box((sx + 2 * WALL, WALL, fl), (cx, cy - sy / 2 - WALL / 2, z0 + fl / 2)), rgba)  # low front
-    # water
-    wl = h * spec.get("fill", 0.5)
-    add(box((sx * 0.96, sy * 0.96, wl), (cx, cy, z0 + wl / 2)), C_WATER)
-
-
-def load_part(rel, transform=None):
-    m = trimesh.load(os.path.join(HW, rel))
-    if transform is not None:
-        m.apply_transform(transform)
+def ball(r, center):
+    m = trimesh.creation.icosphere(subdivisions=2, radius=r)
+    m.apply_translation(center)
     return m
 
 
-def rot_z(deg):
-    return trimesh.transformations.rotation_matrix(np.radians(deg), [0, 0, 1])
+def vessel(spec, wall_h):
+    cx, cy, z0, sx, sy = spec["cx"], spec["cy"], spec["z0"], spec["sx"], spec["sy"]
+    add(box((sx + 2 * WALL, sy + 2 * WALL, WALL), (cx, cy, z0 - WALL / 2)), PLASTIC)
+    sz = z0 + wall_h / 2
+    add(box((WALL, sy, wall_h), (cx - sx / 2 - WALL / 2, cy, sz)), PLASTIC)
+    add(box((WALL, sy, wall_h), (cx + sx / 2 + WALL / 2, cy, sz)), PLASTIC)
+    add(box((sx + 2 * WALL, WALL, wall_h), (cx, cy + sy / 2 + WALL / 2, sz)), PLASTIC)
+    lip = wall_h * 0.42
+    add(box((sx + 2 * WALL, WALL, lip), (cx, cy - sy / 2 - WALL / 2, z0 + lip / 2)), PLASTIC)
+
+
+def water(spec, fill):
+    wl = spec["h"] * fill
+    add(box((spec["sx"] * 0.96, spec["sy"] * 0.96, wl),
+            (spec["cx"], spec["cy"], spec["z0"] + wl / 2)), WATER)
+
+
+def switch_anchor(spec, level, x_shift=0.0):
+    z = spec["z0"] + level * spec["h"]
+    y = spec["cy"] - spec["sy"] / 2 - 0.045
+    return (spec["cx"] + x_shift, y, z)
+
+
+def livestock(x, y, z):
+    add(box((0.34, 0.16, 0.16), (x, y, z + 0.16)), COW)
+    add(box((0.12, 0.10, 0.12), (x + 0.20, y, z + 0.22)), COW_DARK)
+    for dx, dy in ((-0.10, -0.05), (-0.10, 0.05), (0.10, -0.05), (0.10, 0.05)):
+        add(box((0.04, 0.04, 0.12), (x + dx, y + dy, z + 0.06)), COW_DARK)
 
 
 def build():
-    SUP = {"cx": -600, "cy": 0, "z0": 0, "sx": 300, "sy": 300, "h": 340, "fill": 0.6}
-    TRO = {"cx": 550, "cy": 0, "z0": 0, "sx": 660, "sy": 320, "h": 160, "fill": 0.45}
+    add(box((3.6, 2.4, 0.02), (0.0, 0.0, -0.01)), GROUND)
 
-    add(box((1820, 820, 20), (65, 0, -10)), C_BENCH)  # bench top
-    tank(SUP, C_TANK)
-    tank(TRO, C_TANK)
+    # Bench (table) + legs
+    add(box((2.15, 1.15, 0.06), (0.0, 0.0, 0.74)), WOOD)
+    for x, y in ((-0.95, -0.45), (-0.95, 0.45), (0.95, -0.45), (0.95, 0.45)):
+        add(vcyl(0.035, 0.72, (x, y, 0.36)), PLASTIC_DARK)
 
-    # Pump mount (printed) + pump between the tanks
-    mount = load_part("pump-mount/pump_mount.stl")
-    mount.apply_translation((-115, 0, 0))
-    add(mount, C_MOUNT)
-    pump = trimesh.creation.cylinder(radius=20, segment=[(-160, 0, 28), (-70, 0, 28)], sections=40)
-    add(pump, C_PUMP)
+    add(box((0.22, 0.22, 0.12), (-0.72, 0.0, 0.83)), WOOD)  # supply stand
 
-    # Pipe: tank outlet -> pump -> trough inlet
-    add(pipe(8, (-450, 0, 70), (-160, 0, 28)), C_PIPE)
-    add(pipe(8, (-70, 0, 28), (220, 0, 90)), C_PIPE)
-    add(pipe(8, (220, 0, 90), (300, 0, 60)), C_PIPE)
+    vessel(SUPPLY, SUPPLY["h"] + 0.04)
+    vessel(TROUGH, TROUGH["h"] + 0.03)
+    water(SUPPLY, 0.6)
+    water(TROUGH, 0.45)
 
-    # Float-switch bracket (printed) on the trough front wall
-    br = load_part("float-switch-bracket/float_switch_bracket.stl", rot_z(90))
-    br.apply_translation((TRO["cx"], -TRO["sy"] / 2, 0))
-    add(br, C_BRACKET)
-    # switch bodies on the shelves (48/120/147 mm)
-    for h, col in [(48, C_SW), (120, C_SW), (147, C_SW_CUT)]:
-        add(vcyl(10, 26, (TRO["cx"], -TRO["sy"] / 2 + 22, h)), col)
-    # supply-low switch
-    add(vcyl(9, 22, (SUP["cx"], -SUP["sy"] / 2 - 10, 0.20 * SUP["h"])), C_SW)
+    # Pipe supply -> trough
+    sx_r = SUPPLY["cx"] + SUPPLY["sx"] / 2
+    tx_l = TROUGH["cx"] - TROUGH["sx"] / 2
+    add(box((tx_l - sx_r, 0.03, 0.03), ((sx_r + tx_l) / 2, 0.0, 0.96)), PLASTIC_DARK)
 
-    # Controller enclosure (printed) at the bench front
-    enc = load_part("esp32-pump/enclosure/ddroid_controller_box.stl")
-    enc.apply_translation((-115, -330, 0))
-    add(enc, C_ENC)
+    # Pump + lamps
+    add(vcyl(0.055, 0.14, PUMP_XYZ), PUMP_BODY)
+    add(ball(0.03, (PUMP_XYZ[0], PUMP_XYZ[1], PUMP_XYZ[2] + 0.10)), LAMP_ON)
+    add(ball(0.045, MODE_LAMP_XYZ), MODE_REFILL)
 
-    # "Wires" tying switches and pump to the controller
-    add(pipe(2.5, (TRO["cx"], -TRO["sy"] / 2 + 22, 120), (-90, -330, 25)), C_WIRE)
-    add(pipe(2.5, (-115, 0, 28), (-130, -330, 20)), C_WIRE)
-    add(pipe(2.5, (SUP["cx"], -SUP["sy"] / 2 - 10, 68), (-140, -330, 25)), C_WIRE)
+    # Float-switch markers
+    add(ball(0.022, switch_anchor(SUPPLY, 0.20)), SW_WET)
+    add(ball(0.022, switch_anchor(TROUGH, 0.30, -0.18)), SW_WET)
+    add(ball(0.022, switch_anchor(TROUGH, 0.75, 0.05)), SW_DRY)
+    add(ball(0.026, switch_anchor(TROUGH, 0.92, 0.22)), SW_CUT)
+
+    # Livestock at the trough
+    livestock(0.35, -0.48, 0.77)
+    livestock(0.78, -0.50, 0.77)
 
 
 def export_models():
     scene = trimesh.Scene()
     solids = []
+    S = trimesh.transformations.scale_matrix(1000.0)  # m -> mm
     for i, (m, rgba) in enumerate(items):
         g = m.copy()
+        g.apply_transform(S)
         g.visual = trimesh.visual.ColorVisuals(g, face_colors=np.tile(rgba, (len(g.faces), 1)))
         scene.add_geometry(g, geom_name=f"part_{i}")
-        solids.append(m)
+        solids.append(g)
     scene.export(os.path.join(HERE, "system_assembly.glb"))
-    combined = trimesh.util.concatenate(solids)
-    combined.export(os.path.join(HERE, "system_assembly.stl"))
-    print(f"  assembly: {combined.bounding_box.extents.round(0)} mm, {len(items)} parts")
+    trimesh.util.concatenate(solids).export(os.path.join(HERE, "system_assembly.stl"))
+    print(f"  assembly: {trimesh.util.concatenate(solids).bounding_box.extents.round(0)} mm, {len(items)} parts")
 
 
 def render():
@@ -144,38 +155,33 @@ def render():
     import matplotlib.pyplot as plt
     from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
-    light = np.array([0.35, 0.4, 0.85]); light /= np.linalg.norm(light)
+    light = np.array([0.4, 0.5, 0.75]); light /= np.linalg.norm(light)
     allv = np.vstack([m.vertices for m, _ in items])
     lo, hi = allv.min(0), allv.max(0)
 
-    tris_all, fc_all = [], []
+    tris, cols = [], []
     for m, rgba in items:
-        inten = np.clip(m.face_normals @ light, 0, 1) * 0.6 + 0.4
+        inten = np.clip(m.face_normals @ light, 0, 1) * 0.55 + 0.45
         base = np.array(rgba[:3]) / 255.0
         fc = np.clip(base[None, :] * inten[:, None], 0, 1)
         a = rgba[3] / 255.0
-        fc = np.hstack([fc, np.full((len(fc), 1), a)])
-        tris_all.append(m.vertices[m.faces])
-        fc_all.append(fc)
-    tris_all = np.vstack(tris_all)
-    fc_all = np.vstack(fc_all)
+        tris.append(m.vertices[m.faces])
+        cols.append(np.hstack([fc, np.full((len(fc), 1), a)]))
+    tris = np.vstack(tris); cols = np.vstack(cols)
 
-    def draw(ax, elev, azim):
-        pc = Poly3DCollection(tris_all, linewidths=0)
-        pc.set_facecolors(fc_all)
+    fig = plt.figure(figsize=(14, 6)); fig.patch.set_facecolor(SKY)
+    for i, (e, a, t) in enumerate([(20, -58, "overview"), (16, -118, "trough side")]):
+        ax = fig.add_subplot(1, 2, i + 1, projection="3d")
+        pc = Poly3DCollection(tris, linewidths=0); pc.set_facecolors(cols)
         ax.add_collection3d(pc)
         ax.set_xlim(lo[0], hi[0]); ax.set_ylim(lo[1], hi[1]); ax.set_zlim(lo[2], hi[2])
         ax.set_box_aspect((hi - lo))
-        ax.view_init(elev=elev, azim=azim); ax.set_axis_off()
-
-    fig = plt.figure(figsize=(14, 6))
-    for i, (e, a, t) in enumerate([(30, -58, "assembled water point"), (26, -112, "other side")]):
-        ax = fig.add_subplot(1, 2, i + 1, projection="3d")
-        draw(ax, e, a)
-        ax.set_title(t, fontsize=11, color="#444441")
+        ax.view_init(elev=e, azim=a); ax.set_axis_off()
+        ax.patch.set_facecolor(SKY)
+        ax.set_title(t, fontsize=11, color="#2c2c2a")
     plt.tight_layout()
     out = os.path.join(HERE, "preview.png")
-    fig.savefig(out, dpi=150, bbox_inches="tight", transparent=True)
+    fig.savefig(out, dpi=150, bbox_inches="tight", facecolor=SKY)
     print("  wrote", out)
 
 
