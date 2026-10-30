@@ -18,6 +18,7 @@ The control logic here is the same state machine as the Node-RED flow
 | [`esp32-pump/enclosure/`](esp32-pump/enclosure/) | Controller box + lid | 75 x 55 x 30.5 mm |
 | [`float-switch-bracket/`](float-switch-bracket/) | Trough float-switch bracket | 45 x 24 x 125 mm |
 | [`pump-mount/`](pump-mount/) | Pump / outlet-pipe mount | 120 x 52 x 31 mm |
+| [`system-assembly/`](system-assembly/) | Whole water point, assembled | 1820 x 820 x 360 mm |
 
 Each printed part ships with its STL, a parametric generator
 (`generate_*.py`, trimesh + manifold3d), a README and a preview image.

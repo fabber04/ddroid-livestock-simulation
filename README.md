@@ -153,6 +153,17 @@ Printable mounting parts for the physical water point live in
 [`hardware/`](hardware/) — each with an STL, a parametric generator and a print
 guide. See [`hardware/README.md`](hardware/README.md) for the full assembly.
 
+### Assembled system
+
+The whole water point — supply tank, pump, pipe, trough, float-switch bracket
+and controller — as one model. Open
+[`hardware/system-assembly/system_assembly.stl`](hardware/system-assembly/system_assembly.stl)
+on GitHub to rotate it in the browser.
+
+![Assembled DDROID water point](hardware/system-assembly/preview.png)
+
+### Printed parts
+
 ![DDROID printed parts: controller enclosure, float-switch bracket, pump mount](hardware/parts.png)
 
 ### ESP32 controller enclosure
