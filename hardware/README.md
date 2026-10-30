@@ -8,6 +8,8 @@ The control logic here is the same state machine as the Node-RED flow
 > Pump starts OFF. Water **LOW** -> pump **ON** (fill). Water **FULL** or
 > **STOP** -> pump **OFF**.
 
+![DDROID printed parts: enclosure, float-switch bracket, pump mount](parts.png)
+
 ## Contents
 
 | Folder | Part | STL size |
