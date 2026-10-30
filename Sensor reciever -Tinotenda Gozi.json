@@ -1,0 +1,53 @@
+[
+    {
+        "id": "http-flow",
+        "type": "tab",
+        "label": "HTTP Sensor Receiver",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "http_in_node",
+        "type": "http in",
+        "z": "http-flow",
+        "name": "Sensor Input",
+        "url": "/sensor",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 120,
+        "wires": [
+            [
+                "debug_node",
+                "http_response_node"
+            ]
+        ]
+    },
+    {
+        "id": "debug_node",
+        "type": "debug",
+        "z": "http-flow",
+        "name": "Sensor Debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 420,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "http_response_node",
+        "type": "http response",
+        "z": "http-flow",
+        "name": "Send Response",
+        "statusCode": "",
+        "headers": {},
+        "x": 420,
+        "y": 160,
+        "wires": []
+    }
+]
