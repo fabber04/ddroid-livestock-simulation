@@ -147,6 +147,34 @@ cd simulation
 python3 build_world.py
 ```
 
+## 3D-printed hardware
+
+Printable mounting parts for the physical water point live in
+[`hardware/`](hardware/) — each with an STL, a parametric generator and a print
+guide. See [`hardware/README.md`](hardware/README.md) for the full assembly.
+
+![DDROID printed parts: controller enclosure, float-switch bracket, pump mount](hardware/parts.png)
+
+### ESP32 controller enclosure
+
+Box + lid sized for the ESP32 DevKit, with USB/cable slots, board standoffs and
+lid holes for the LOW/FULL/STOP buttons and PUMP/IDLE LEDs.
+
+![ESP32 controller enclosure](hardware/esp32-pump/enclosure/preview.png)
+
+### Float-switch bracket
+
+Clips over the trough rim and holds the float switches at the LOW (48 mm),
+FULL (120 mm) and cutoff (147 mm) heights — the 30 / 75 / 92% thresholds.
+
+![Float-switch bracket](hardware/float-switch-bracket/preview.png)
+
+### Pump / pipe mount
+
+Saddle cradles that clamp the pump body (zip-tied through the base) plus a
+snap-in clip for the outlet pipe.
+
+![Pump / pipe mount](hardware/pump-mount/preview.png)
 
 ROLE ALLOCATIONS BY SYSTEMS ENGINEER FOR PHASE 1:
 
