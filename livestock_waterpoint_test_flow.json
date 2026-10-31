@@ -1,0 +1,194 @@
+[
+    {
+        "id": "ca329836da19c7b3",
+        "type": "tab",
+        "label": "Livestock_waterpoint_test",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "4a36532d56f2658d",
+        "type": "inject",
+        "z": "ca329836da19c7b3",
+        "name": "LOW",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "LOW",
+        "payload": "LOW",
+        "payloadType": "str",
+        "x": 230,
+        "y": 140,
+        "wires": [
+            [
+                "4a34ea6ba47a55dc"
+            ]
+        ]
+    },
+    {
+        "id": "31658f1c48d4c7a0",
+        "type": "inject",
+        "z": "ca329836da19c7b3",
+        "name": "FULL",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "FULL",
+        "payload": "FULL",
+        "payloadType": "str",
+        "x": 230,
+        "y": 280,
+        "wires": [
+            [
+                "4915271d7368457e"
+            ]
+        ]
+    },
+    {
+        "id": "98aa469f8f3d0520",
+        "type": "inject",
+        "z": "ca329836da19c7b3",
+        "name": "STOP",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "STOP",
+        "payload": "STOP",
+        "payloadType": "str",
+        "x": 230,
+        "y": 400,
+        "wires": [
+            [
+                "ce9bb059269ddaaa"
+            ]
+        ]
+    },
+    {
+        "id": "d9965b67765de07f",
+        "type": "inject",
+        "z": "ca329836da19c7b3",
+        "name": "cow-out",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "cow-out",
+        "payload": "cow-out",
+        "payloadType": "str",
+        "x": 230,
+        "y": 520,
+        "wires": [
+            [
+                "fa8809acb58c6025"
+            ]
+        ]
+    },
+    {
+        "id": "4a34ea6ba47a55dc",
+        "type": "debug",
+        "z": "ca329836da19c7b3",
+        "name": "Result LOW",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 590,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "4915271d7368457e",
+        "type": "debug",
+        "z": "ca329836da19c7b3",
+        "name": "Result FULL",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 590,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "ce9bb059269ddaaa",
+        "type": "debug",
+        "z": "ca329836da19c7b3",
+        "name": "Result STOP",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 590,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "fa8809acb58c6025",
+        "type": "debug",
+        "z": "ca329836da19c7b3",
+        "name": "Result cow-out",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 520,
+        "wires": []
+    }
+]
