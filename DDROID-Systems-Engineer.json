@@ -1,0 +1,152 @@
+[
+  {
+    "id": "d0d0000000000001",
+    "type": "tab",
+    "label": "DDROID - Systems Engineer",
+    "disabled": false,
+    "info": "Tanatswa Bernard Nyautore: three numeric simulated water inputs, a four-line message-preparation function, and complete-message Debug output. This tab does not operate hardware."
+  },
+  {
+    "id": "d0d0000000000002",
+    "type": "inject",
+    "z": "d0d0000000000001",
+    "name": "LOW WATER - 20%",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "20",
+    "payloadType": "num",
+    "x": 180,
+    "y": 180,
+    "wires": [
+      [
+        "d0d0000000000005"
+      ]
+    ]
+  },
+  {
+    "id": "d0d0000000000003",
+    "type": "inject",
+    "z": "d0d0000000000001",
+    "name": "NORMAL WATER - 50%",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "50",
+    "payloadType": "num",
+    "x": 180,
+    "y": 240,
+    "wires": [
+      [
+        "d0d0000000000005"
+      ]
+    ]
+  },
+  {
+    "id": "d0d0000000000004",
+    "type": "inject",
+    "z": "d0d0000000000001",
+    "name": "FULL WATER - 90%",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "90",
+    "payloadType": "num",
+    "x": 180,
+    "y": 300,
+    "wires": [
+      [
+        "d0d0000000000005"
+      ]
+    ]
+  },
+  {
+    "id": "d0d0000000000005",
+    "type": "function",
+    "z": "d0d0000000000001",
+    "name": "Prepare water reading",
+    "func": "msg.topic = \"water/level\";\nmsg.source = \"simulation\";\nmsg.timestamp = new Date().toISOString();\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 470,
+    "y": 240,
+    "wires": [
+      [
+        "d0d0000000000006"
+      ]
+    ],
+    "info": "Name, source, time, send. Keep msg.payload numeric and unchanged. At integration, send this output through the water-reading validator before pump control."
+  },
+  {
+    "id": "d0d0000000000006",
+    "type": "debug",
+    "z": "d0d0000000000001",
+    "name": "Water message - complete",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "true",
+    "targetType": "full",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 750,
+    "y": 240,
+    "wires": []
+  },
+  {
+    "id": "d0d0000000000007",
+    "type": "comment",
+    "z": "d0d0000000000001",
+    "name": "Tanatswa Bernard Nyautore - Systems Engineer",
+    "info": "Current task: simulate water inputs. Main group responsibility: combine and test the complete system using the team modules.",
+    "x": 370,
+    "y": 60,
+    "wires": []
+  },
+  {
+    "id": "d0d0000000000008",
+    "type": "comment",
+    "z": "d0d0000000000001",
+    "name": "Deploy, then click a button and inspect Debug",
+    "info": "Inputs are numbers: 20, 50, 90. No automatic injection. No pump connection. All nodes are built in.",
+    "x": 350,
+    "y": 110,
+    "wires": []
+  },
+  {
+    "id": "d0d0000000000009",
+    "type": "comment",
+    "z": "d0d0000000000001",
+    "name": "Next: validator, controller, display and records",
+    "info": "Later integration: Keith validates before Fabilous controls. Tapiwa supplies START/STOP. Nickson displays results and Divine logs events. Integrate the other team modules when received.",
+    "x": 560,
+    "y": 380,
+    "wires": []
+  }
+]
