@@ -1,4 +1,258 @@
-$json = Get-Clipboard -Raw
-if ([string]::IsNullOrWhiteSpace($json)) { throw "Clipboard is empty. Export and copy your Node-RED flows first." }
-$json | ConvertFrom-Json -ErrorAction Stop | Out-Null
-[System.IO.File]::WriteAllText("$PWD\node-red\cattle-fence-flows.json", $json, (New-Object System.Text.UTF8Encoding($false)))
+[
+    {
+        "id": "0d4c215db4e4dd82",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "fad44e4bf4f889c5",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": false
+    },
+    {
+        "id": "a30b629f2e6ce204",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#fcfcfd",
+            "primary": "#0d74ce",
+            "bgPage": "#f9f9fb",
+            "groupBg": "#ffffff",
+            "groupOutline": "#d9d9e0"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "12px"
+        }
+    },
+    {
+        "id": "1071a707fa3440d3",
+        "type": "ui-page",
+        "name": "Cattle Monitoring",
+        "ui": "fad44e4bf4f889c5",
+        "path": "/page1",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "a30b629f2e6ce204",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "tabs": [],
+        "order": 1,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "4c30015e6395a3a1",
+        "type": "ui-group",
+        "name": "Fence Test Controls",
+        "page": "1071a707fa3440d3",
+        "width": 6,
+        "height": 1,
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default",
+        "tab": ""
+    },
+    {
+        "id": "db620fe54b549c55",
+        "type": "ui-button",
+        "z": "0d4c215db4e4dd82",
+        "group": "4c30015e6395a3a1",
+        "name": "Cow Inside Fence",
+        "label": "\tCOW INSIDE FENCE",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "emulateClick": true,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "iconPosition": "left",
+        "payload": "\tINSIDE",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "buttonColor": "",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 131,
+        "y": 120,
+        "wires": [
+            [
+                "4709720d94f4d8b1"
+            ]
+        ]
+    },
+    {
+        "id": "16981c3ceef0f8a3",
+        "type": "ui-button",
+        "z": "0d4c215db4e4dd82",
+        "group": "4c30015e6395a3a1",
+        "name": "Cow Outside Fence",
+        "label": "COW OUTSIDE FENCE",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "iconPosition": "left",
+        "payload": "\tOUTSIDE",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "buttonColor": "",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 130,
+        "y": 180,
+        "wires": [
+            [
+                "4709720d94f4d8b1"
+            ]
+        ]
+    },
+    {
+        "id": "4709720d94f4d8b1",
+        "type": "function",
+        "z": "0d4c215db4e4dd82",
+        "name": "Cattle Fence Detection Logic",
+        "func": "const event = String(msg.payload).trim().toUpperCase();\n\nif (event === \"INSIDE\") {\n    return [\n        { payload: \"🟢 COW SAFE - INSIDE FENCE\" },\n        null\n    ];\n}\n\nif (event === \"OUTSIDE\") {\n    return [\n        { payload: \"🔴 ALERT - COW OUTSIDE FENCE!\" },\n        { payload: \"🚨 WARNING! COW OUTSIDE FENCE! Immediate attention required.\" }\n    ];\n}\n\nreturn [null, null];",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 180,
+        "wires": [
+            [
+                "abf2c195fe14471c"
+            ],
+            [
+                "531954c5541fa814"
+            ]
+        ]
+    },
+    {
+        "id": "abf2c195fe14471c",
+        "type": "ui-text",
+        "z": "0d4c215db4e4dd82",
+        "group": "4c30015e6395a3a1",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "\t\tCattle Status Display",
+        "label": "\tCURRENT CATTLE STATUS",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "wrapText": false,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "x": 700,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "531954c5541fa814",
+        "type": "ui-notification",
+        "z": "0d4c215db4e4dd82",
+        "ui": "fad44e4bf4f889c5",
+        "position": "top center",
+        "colorDefault": true,
+        "color": "#000000",
+        "displayTime": "10",
+        "showCountdown": true,
+        "outputs": 1,
+        "allowDismiss": true,
+        "dismissText": "",
+        "allowConfirm": false,
+        "confirmText": "Confirm",
+        "raw": false,
+        "className": "",
+        "name": "Outside Fence Alert",
+        "x": 690,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "025dc48f46811c78",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "@flowfuse/node-red-dashboard": "1.34.1"
+        }
+    }
+]
