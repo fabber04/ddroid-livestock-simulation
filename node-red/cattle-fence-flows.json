@@ -1,0 +1,4 @@
+$json = Get-Clipboard -Raw
+if ([string]::IsNullOrWhiteSpace($json)) { throw "Clipboard is empty. Export and copy your Node-RED flows first." }
+$json | ConvertFrom-Json -ErrorAction Stop | Out-Null
+[System.IO.File]::WriteAllText("$PWD\node-red\cattle-fence-flows.json", $json, (New-Object System.Text.UTF8Encoding($false)))
