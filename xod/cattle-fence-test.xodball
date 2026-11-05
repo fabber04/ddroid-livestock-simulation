@@ -1,0 +1,202 @@
+{
+  "patches": {
+    "@/main": {
+      "nodes": {
+        "BkQubsKpzg": {
+          "id": "BkQubsKpzg",
+          "type": "xod/debug/tweak-boolean",
+          "position": {
+            "x": 1,
+            "y": -2,
+            "units": "slots"
+          },
+          "label": "COW OUTSIDE FENCE",
+          "size": {
+            "width": 4,
+            "height": 1,
+            "units": "slots"
+          }
+        },
+        "ryYY-oKafx": {
+          "id": "ryYY-oKafx",
+          "type": "xod/debug/tweak-boolean",
+          "position": {
+            "x": 1,
+            "y": 0,
+            "units": "slots"
+          },
+          "label": "COW INSIDE FENCE",
+          "boundLiterals": {
+            "Sk1e_NIVE": "True"
+          },
+          "size": {
+            "width": 3,
+            "height": 1,
+            "units": "slots"
+          }
+        },
+        "S1xpZjYpGl": {
+          "id": "S1xpZjYpGl",
+          "type": "xod/core/if-else",
+          "position": {
+            "x": 5,
+            "y": 0,
+            "units": "slots"
+          },
+          "label": "IF-ELSE DECISION"
+        },
+        "Sk7RZsYaGe": {
+          "id": "Sk7RZsYaGe",
+          "type": "xod/core/constant-string",
+          "position": {
+            "x": 6,
+            "y": -2,
+            "units": "slots"
+          },
+          "label": "COW OUTSIDE FENCE! ALERT ACTIVATED",
+          "size": {
+            "width": 6,
+            "height": 1,
+            "units": "slots"
+          }
+        },
+        "S1h0ZjY6Ml": {
+          "id": "S1h0ZjY6Ml",
+          "type": "xod/core/constant-string",
+          "position": {
+            "x": 7,
+            "y": -1,
+            "units": "slots"
+          },
+          "label": "COW INSIDE FENCE - NORMAL",
+          "size": {
+            "width": 5,
+            "height": 1,
+            "units": "slots"
+          }
+        },
+        "HJtJMoFafe": {
+          "id": "HJtJMoFafe",
+          "type": "xod/debug/watch",
+          "position": {
+            "x": 1,
+            "y": 1,
+            "units": "slots"
+          },
+          "label": "inside_status_display",
+          "size": {
+            "width": 3,
+            "height": 1,
+            "units": "slots"
+          }
+        },
+        "SkkeMoFpMl": {
+          "id": "SkkeMoFpMl",
+          "type": "xod/debug/watch",
+          "position": {
+            "x": 1,
+            "y": -1,
+            "units": "slots"
+          },
+          "label": "outside_status_display",
+          "size": {
+            "width": 4,
+            "height": 1,
+            "units": "slots"
+          }
+        },
+        "rkKlMotpGg": {
+          "id": "rkKlMotpGg",
+          "type": "xod/debug/console-log",
+          "position": {
+            "x": 5,
+            "y": 1,
+            "units": "slots"
+          },
+          "label": "fence_alert_logger"
+        }
+      },
+      "links": {
+        "SJGJEsYTfg": {
+          "id": "SJGJEsYTfg",
+          "output": {
+            "nodeId": "ryYY-oKafx",
+            "pinKey": "Sk1e_NIVE"
+          },
+          "input": {
+            "nodeId": "HJtJMoFafe",
+            "pinKey": "HkXK-dGob"
+          }
+        },
+        "S1zQ4jKaMl": {
+          "id": "S1zQ4jKaMl",
+          "output": {
+            "nodeId": "S1xpZjYpGl",
+            "pinKey": "S13xLCuHvkW"
+          },
+          "input": {
+            "nodeId": "rkKlMotpGg",
+            "pinKey": "HJdO9HwJ-"
+          }
+        },
+        "By3EEoFafg": {
+          "id": "By3EEoFafg",
+          "output": {
+            "nodeId": "BkQubsKpzg",
+            "pinKey": "Sk1e_NIVE"
+          },
+          "input": {
+            "nodeId": "SkkeMoFpMl",
+            "pinKey": "HkXK-dGob"
+          }
+        },
+        "r1vL4oKpGx": {
+          "id": "r1vL4oKpGx",
+          "output": {
+            "nodeId": "BkQubsKpzg",
+            "pinKey": "Sk1e_NIVE"
+          },
+          "input": {
+            "nodeId": "S1xpZjYpGl",
+            "pinKey": "S1yZIA_rDJZ"
+          }
+        },
+        "rJbi8iF6zg": {
+          "id": "rJbi8iF6zg",
+          "output": {
+            "nodeId": "S1h0ZjY6Ml",
+            "pinKey": "B1x2RV3eZ"
+          },
+          "input": {
+            "nodeId": "S1xpZjYpGl",
+            "pinKey": "r1AgIROHDJW"
+          }
+        },
+        "SJnoLjtafx": {
+          "id": "SJnoLjtafx",
+          "output": {
+            "nodeId": "Sk7RZsYaGe",
+            "pinKey": "B1x2RV3eZ"
+          },
+          "input": {
+            "nodeId": "S1xpZjYpGl",
+            "pinKey": "ryTeUROHD1b"
+          }
+        },
+        "B1N3LjtTzx": {
+          "id": "B1N3LjtTzx",
+          "output": {
+            "nodeId": "ryYY-oKafx",
+            "pinKey": "Sk1e_NIVE"
+          },
+          "input": {
+            "nodeId": "rkKlMotpGg",
+            "pinKey": "S1n95SDJb"
+          }
+        }
+      },
+      "path": "@/main"
+    }
+  },
+  "name": "cattle-fence-test"
+}
